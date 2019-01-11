@@ -1,0 +1,15 @@
+{
+    "name": "snebes/range-differencer",
+    "description": "Provides support for finding the differences between two or three sequences of comparable entities.",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Steve Nebes",
+            "email": "snebes@gmail.com"
+        }
+    ]
+}
