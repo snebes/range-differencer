@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace SN\RangeDifferencer;
 
+use SN\RangeDifferencer\Core\AbstractLCS;
+
 class RangeComparatorLCS extends AbstractLCS
 {
     /** @var RangeComparatorInterface */
@@ -107,8 +109,6 @@ class RangeComparatorLCS extends AbstractLCS
         } else {
             $index1 = 0;
             $index2 = 0;
-            $l1 = 0;
-            $l2 = 0;
             $s1 = -1;
             $s2 = -1;
 
