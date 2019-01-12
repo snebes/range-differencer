@@ -151,6 +151,14 @@ class RangeDifference
     /**
      * @return int
      */
+    public function getLeftEnd(): int
+    {
+        return $this->leftStart + $this->leftLength;
+    }
+
+    /**
+     * @return int
+     */
     public function getRightStart(): int
     {
         return $this->rightStart;
@@ -162,6 +170,14 @@ class RangeDifference
     public function getRightLength(): int
     {
         return $this->rightLength;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRightEnd(): int
+    {
+        return $this->rightStart + $this->rightLength;
     }
 
     /**
@@ -181,12 +197,20 @@ class RangeDifference
     }
 
     /**
+     * @return int
+     */
+    public function getAncestorEnd(): int
+    {
+        return $this->ancestorStart + $this->ancestorLength;
+    }
+
+    /**
      * Returns the maximum number of entities in the left, right, and ancestor
      * sides of this range.
      *
      * @return int
      */
-    public function maxLength(): int
+    public function getMaxLength(): int
     {
         return \max(
             $this->rightLength,
@@ -200,7 +224,7 @@ class RangeDifference
      * @param RangeDifference $other
      * @return bool
      */
-    public function equals(RangeDifference $other): bool
+    public function isEqual(RangeDifference $other): bool
     {
         return
             $this->kind === $other->getKind() &&

@@ -22,27 +22,30 @@ class RangeDifferenceTest extends TestCase
         $this->assertSame(0, $diff->getKind());
         $this->assertSame(1, $diff->getRightStart());
         $this->assertSame(2, $diff->getRightLength());
+        $this->assertSame(3, $diff->getRightEnd());
         $this->assertSame(3, $diff->getLeftStart());
         $this->assertSame(4, $diff->getLeftLength());
+        $this->assertSame(7, $diff->getLeftEnd());
         $this->assertSame(5, $diff->getAncestorStart());
         $this->assertSame(6, $diff->getAncestorLength());
+        $this->assertSame(11, $diff->getAncestorEnd());
     }
 
-    public function testMaxLength(): void
+    public function testGetMaxLength(): void
     {
         $diff = new RangeDifference(0, 1, 2, 3, 4, 5,6);
 
-        $this->assertSame(6, $diff->maxLength());
+        $this->assertSame(6, $diff->getMaxLength());
     }
 
-    public function testEquals(): void
+    public function testIsEqual(): void
     {
         $diff1 = new RangeDifference(0, 1, 2, 3, 4, 5,6);
         $diff2 = new RangeDifference(0, 1, 2, 3, 4, 5,6);
         $diff3 = new RangeDifference(1, 1, 2, 3, 4, 5,6);
 
-        $this->assertTrue($diff1->equals($diff2));
-        $this->assertFalse($diff1->equals($diff3));
+        $this->assertTrue($diff1->isEqual($diff2));
+        $this->assertFalse($diff1->isEqual($diff3));
     }
 
     public function testToString(): void
