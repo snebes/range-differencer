@@ -13,6 +13,11 @@ namespace SN\RangeDifferencer;
 
 use SN\RangeDifferencer\Core\AbstractLCS;
 
+/**
+ * RangeComparator using Longest Common Subsequence.
+ *
+ * @internal
+ */
 class RangeComparatorLCS extends AbstractLCS
 {
     /** @var RangeComparatorInterface */
@@ -22,7 +27,7 @@ class RangeComparatorLCS extends AbstractLCS
     private $comparator2;
 
     /** @var int[][] */
-    private $lcs = [];
+    private $lcs;
 
     /**
      * Default values.
@@ -105,7 +110,7 @@ class RangeComparatorLCS extends AbstractLCS
             $differences[] = new RangeDifference(
                 RangeDifference::CHANGE,
                 0, $this->comparator2->getRangeCount(),
-                0 , $this->comparator1->getRangeCount());
+                0, $this->comparator1->getRangeCount());
         } else {
             $index1 = 0;
             $index2 = 0;
@@ -165,7 +170,7 @@ class RangeComparatorLCS extends AbstractLCS
             }
 
             if (-1 !== $s1 && ($s1 + 1 < $this->comparator1->getRangeCount() ||
-                $s2 + 1 < $this->comparator2->getRangeCount())) {
+                    $s2 + 1 < $this->comparator2->getRangeCount())) {
                 $leftStart = $s1 < $this->comparator1->getRangeCount() ? $s1 + 1 : $s1;
                 $rightStart = $s2 < $this->comparator2->getRangeCount() ? $s2 + 1 : $s2;
 
@@ -178,5 +183,73 @@ class RangeComparatorLCS extends AbstractLCS
         }
 
         return $differences;
+    }
+
+    /**
+     * This method takes an LCS result interspersed with zeros (i.e. empty slots  from the LCS algorithm), compacts it
+     * and shifts the LCS chunks as far towards the front as possible. This tends to produce good results most of the
+     * time.
+     *
+     * @param int[]                    $lcsSide
+     * @param int                      $length
+     * @param RangeComparatorInterface $comparator
+     */
+    private function compactAndShiftLCS(array &$lcsSide, int $length, RangeComparatorInterface $comparator): void
+    {
+        // If the LCS is empty, just return.
+        if (0 === $length) {
+            return;
+        }
+
+        // Skip any leading slots.
+        $j = 0;
+
+        while (0 === $lcsSide[$j]) {
+            $j++;
+        }
+
+        // Put the first non-empty value in position 0.
+        $lcsSide[0] = $lcsSide[$j];
+        $j++;
+
+        // Push all non-empty values down into the first N slots (where N is the length)
+        for ($i = 1; $i < $length; $i++) {
+            while (0 === $lcsSide[$j]) {
+                $j++;
+            }
+
+            /*
+             * Push the difference down as far as possible by comparing the line at the start of the diff with the line
+             * and the end and adjusting if they are the same.
+             */
+            $nextLine = $lcsSide[$i - 1] + 1;
+
+            if ($nextLine !== $lcsSide[$j] && $comparator->rangesEqual($nextLine - 1, $comparator, $lcsSide[$j] -1)) {
+                $lcsSide[$i] = $nextLine;
+            } else {
+                $lcsSide[$i] = $lcsSide[$j];
+            }
+
+            $j++;
+        }
+
+        // Zero all slots after the length.
+        for ($i = $length; $i < \count($lcsSide); $i++) {
+            $lcsSide[$i] = 0;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function longestCommonSubsequence(): void
+    {
+        parent::longestCommonSubsequence();
+
+        // The LCS can be null if one of the sides is empty.
+        if (null !== $this->lcs) {
+            $this->compactAndShiftLCS($this->lcs[0], $this->getLength(), $this->comparator1);
+            $this->compactAndShiftLCS($this->lcs[1], $this->getLength(), $this->comparator2);
+        }
     }
 }

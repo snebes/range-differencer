@@ -19,7 +19,7 @@ class TextLineLCS extends AbstractLCS
     /** @var TextLine[] */
     private $lines2 = [];
 
-    /** @var array[TextLine[]] */
+    /** @var TextLine[][] */
     private $lcs = [];
 
     /**
@@ -35,7 +35,7 @@ class TextLineLCS extends AbstractLCS
     }
 
     /**
-     * @return array[TextLine[]]
+     * @return TextLine[][]
      */
     public function getResult(): array
     {
