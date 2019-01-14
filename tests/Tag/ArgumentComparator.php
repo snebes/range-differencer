@@ -26,7 +26,7 @@ class ArgumentComparator implements AtomSplitterInterface
     }
 
     /**
-     * @param  string $s
+     * @param string $s
      * @return void
      * @throws Exception
      */
@@ -67,7 +67,7 @@ class ArgumentComparator implements AtomSplitterInterface
     }
 
     /**
-     * @param  int $i
+     * @param int $i
      * @return AtomInterface
      * @throws OutOfBoundsException
      */
@@ -89,9 +89,9 @@ class ArgumentComparator implements AtomSplitterInterface
     }
 
     /**
-     * @param  int                      $thisIndex
-     * @param  RangeComparatorInterface $other
-     * @param  int                      $otherIndex
+     * @param int                      $thisIndex
+     * @param RangeComparatorInterface $other
+     * @param int                      $otherIndex
      * @return bool
      */
     public function rangesEqual(int $thisIndex, RangeComparatorInterface $other, int $otherIndex): bool
@@ -104,9 +104,9 @@ class ArgumentComparator implements AtomSplitterInterface
     }
 
     /**
-     * @param  int                      $length
-     * @param  int                      $maxLength
-     * @param  RangeComparatorInterface $other
+     * @param int                      $length
+     * @param int                      $maxLength
+     * @param RangeComparatorInterface $other
      * @return bool
      */
     public function skipRangeComparison(int $length, int $maxLength, RangeComparatorInterface $other): bool
@@ -115,8 +115,8 @@ class ArgumentComparator implements AtomSplitterInterface
     }
 
     /**
-     * @param  int      $startAtom
-     * @param  int|null $endAtom
+     * @param int      $startAtom
+     * @param int|null $endAtom
      * @return string
      */
     public function substring(int $startAtom, ?int $endAtom = null): string

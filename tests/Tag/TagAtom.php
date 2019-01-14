@@ -1,4 +1,10 @@
 <?php
+/**
+ * (c) Steve Nebes <snebes@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 declare(strict_types=1);
 
@@ -18,23 +24,24 @@ class TagAtom implements AtomInterface
     private $internalIdentifiers = '';
 
     /**
-     * @param  string $s
+     * @param string $str
+     *
      * @throws InvalidArgumentException
      */
-    public function __construct(string $s)
+    public function __construct(string $str)
     {
-        if (!$this->isValidAtom($s)) {
+        if (!$this->isValidAtom($str)) {
             throw new InvalidArgumentException('The given string is not a valid tag.');
         }
 
         // Remove the < and >.
-        $s = mb_substr($s, 1, -1);
+        $str = \mb_substr($str, 1, -1);
 
-        if (false !== ($pos = mb_strpos($s, ' '))) {
-            $this->identifier          = mb_substr($s, 0, $pos);
-            $this->internalIdentifiers = mb_substr($s, $pos + 1);
+        if (false !== $pos = \mb_strpos($str, ' ')) {
+            $this->identifier = \mb_substr($str, 0, $pos);
+            $this->internalIdentifiers = mb_substr($str, $pos + 1);
         } else {
-            $this->identifier = $s;
+            $this->identifier = $str;
         }
     }
 
@@ -53,19 +60,19 @@ class TagAtom implements AtomInterface
     /** {@inheritdoc} */
     public function hasInternalIdentifiers(): bool
     {
-        return !empty($this->internalIdentifiers);
+        return \mb_strlen($this->internalIdentifiers) > 0;
     }
 
     /**
-     * @param  string $s
+     * @param string $str
      * @return bool
      */
-    public static function isValidTag(string $s): bool
+    public static function isValidTag(string $str): bool
     {
         return
-            0 == mb_strrpos($s, '<') &&
-            mb_strpos($s, '>') == mb_strlen($s) - 1 &&
-            mb_strlen($s) >= 3;
+            0 === \mb_strrpos($str, '<') &&
+            \mb_strpos($str, '>') === \mb_strlen($str) - 1 &&
+            \mb_strlen($str) >= 3;
     }
 
     /** {@inheritdoc} */
@@ -77,15 +84,13 @@ class TagAtom implements AtomInterface
             $s .= sprintf(' %s', $this->internalIdentifiers);
         }
 
-        $s .= '>';
-
-        return $s;
+        return sprintf('%s>', $s);
     }
 
     /** {@inheritdoc} */
-    public function isValidAtom(string $s): bool
+    public function isValidAtom(string $str): bool
     {
-        return self::isValidTag($s);
+        return self::isValidTag($str);
     }
 
     /**
@@ -99,6 +104,6 @@ class TagAtom implements AtomInterface
     /** {@inheritdoc} */
     public function equalsIdentifier(AtomInterface $other): bool
     {
-        return 0 == strcmp($other->getIdentifier(), $this->getIdentifier());
+        return $other->getIdentifier() === $this->identifier;
     }
 }

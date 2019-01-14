@@ -27,8 +27,8 @@ class TagDiffer implements TextDifferInterface
     }
 
     /**
-     * @param  AtomSplitterInterface $leftComparator
-     * @param  AtomSplitterInterface $rightComparator
+     * @param AtomSplitterInterface $leftComparator
+     * @param AtomSplitterInterface $rightComparator
      * @throws Exception
      */
     public function diff(AtomSplitterInterface $leftComparator, AtomSplitterInterface $rightComparator): void
@@ -146,8 +146,8 @@ class TagDiffer implements TextDifferInterface
     }
 
     /**
-     * @param  RangeDifference[]     $differences
-     * @param  AtomSplitterInterface $leftComparator
+     * @param RangeDifference[]     $differences
+     * @param AtomSplitterInterface $leftComparator
      * @return RangeDifference[]
      * @throws Exception
      */
@@ -207,8 +207,8 @@ class TagDiffer implements TextDifferInterface
     }
 
     /**
-     * @param  RangeDifference[] $differences
-     * @param  int               $span
+     * @param RangeDifference[] $differences
+     * @param int               $span
      * @return RangeDifference[]
      */
     private function preProcess2(array $differences, int $span): array

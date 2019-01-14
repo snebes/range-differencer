@@ -224,7 +224,7 @@ class RangeComparatorLCS extends AbstractLCS
              */
             $nextLine = $lcsSide[$i - 1] + 1;
 
-            if ($nextLine !== $lcsSide[$j] && $comparator->rangesEqual($nextLine - 1, $comparator, $lcsSide[$j] -1)) {
+            if ($nextLine !== $lcsSide[$j] && $comparator->rangesEqual($nextLine - 1, $comparator, $lcsSide[$j] - 1)) {
                 $lcsSide[$i] = $nextLine;
             } else {
                 $lcsSide[$i] = $lcsSide[$j];

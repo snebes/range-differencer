@@ -1,10 +1,14 @@
 <?php
+/**
+ * (c) Steve Nebes <snebes@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 declare(strict_types=1);
 
 namespace SN\RangeDifferencer\Tag;
-
-use RuntimeException;
 
 /**
  * An Atom that represents a piece of ordinary text.
@@ -12,36 +16,37 @@ use RuntimeException;
 class TextAtom implements AtomInterface
 {
     /** @var string */
-    private $s;
+    private $str;
 
     /**
-     * @param  string|null $s
+     * @param string $str
      */
-    public function __construct(string $s)
+    public function __construct(string $str)
     {
-        if (!$this->isValidAtom($s)) {
-            throw new RuntimeException('The given String is not a valid Text Atom.');
+        if (!$this->isValidAtom($str)) {
+            var_dump($str);
+            throw new \InvalidArgumentException('The given String is not a valid Text Atom.');
         }
 
-        $this->s = $s;
+        $this->str = $str;
     }
 
     /** {@inheritdoc} */
     public function getFullText(): string
     {
-        return $this->s;
+        return $this->str;
     }
 
     /** {@inheritdoc} */
     public function getIdentifier(): string
     {
-        return $this->s;
+        return $this->str;
     }
 
     /** {@inheritdoc} */
     public function getInternalIdentifiers(): string
     {
-        throw new RuntimeException('This Atom has no internal identifiers.');
+        throw new \RuntimeException('This Atom has no internal identifiers.');
     }
 
     /** {@inheritdoc} */
@@ -51,9 +56,9 @@ class TextAtom implements AtomInterface
     }
 
     /** {@inheritdoc} */
-    public function isValidAtom(string $s): bool
+    public function isValidAtom(string $str): bool
     {
-        return !empty($s);
+        return \mb_strlen($str) > 0;
     }
 
     /**
@@ -67,6 +72,6 @@ class TextAtom implements AtomInterface
     /** {@inheritdoc} */
     public function equalsIdentifier(AtomInterface $other): bool
     {
-        return 0 == strcmp($other->getIdentifier(), $this->getIdentifier());
+        return $other->getIdentifier() === $this->str;
     }
 }

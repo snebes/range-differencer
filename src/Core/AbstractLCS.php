@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Steve Nebes <snebes@gmail.com>
  *
@@ -85,8 +84,8 @@ abstract class AbstractLCS
             $backBoundL2--;
         }
 
-        $V = array_fill(0, 2, array_fill(0, $length1 + $length2 + 1, 0));
-        $snake = array_fill(0, 3, 0);
+        $V = \array_fill(0, 2, \array_fill(0, $length1 + $length2 + 1, 0));
+        $snake = [0, 0, 0];
         $lcsRec = $this->lcsRec($forwardBound, $backBoundL1, $forwardBound, $backBoundL2, $V, $snake);
 
         $this->length = $forwardBound + $length1 - $backBoundL1 - 1 + $lcsRec;
