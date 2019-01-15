@@ -1,19 +1,14 @@
-<h2 align="center">Range Differencer</h2>
+## Range Differencer
 
-<p align="center">
-    <img src="https://img.shields.io/packagist/php-v/snebes/range-differencer.svg"/>
-    <img src="https://img.shields.io/packagist/v/snebes/range-differencer.svg"/>
-    <a href="https://scrutinizer-ci.com/g/snebes/range-differencer" target="_blank">
-        <img src="https://img.shields.io/scrutinizer/build/g/snebes/range-differencer.svg"/>
-        <img src="https://img.shields.io/scrutinizer/g/snebes/range-differencer.svg"/>
-        <img src="https://img.shields.io/scrutinizer/coverage/g/snebes/range-differencer.svg"/>
-    </a>
-</p>
-
+[![PHP Version](https://img.shields.io/packagist/php-v/snebes/range-differencer.svg)](https://packagist.org/packages/snebes/range-differencer)
+[![Latest Version](https://img.shields.io/packagist/v/snebes/range-differencer.svg)](https://packagist.org/packages/snebes/range-differencer)
+[![Build Status](https://img.shields.io/scrutinizer/build/g/snebes/range-differencer.svg)](https://scrutinizer-ci.com/g/snebes/range-differencer)
+[![Code Quality](https://img.shields.io/scrutinizer/g/snebes/range-differencer.svg)](https://scrutinizer-ci.com/g/snebes/range-differencer)
+[![Test Coverage](https://img.shields.io/scrutinizer/coverage/g/snebes/range-differencer.svg)](https://scrutinizer-ci.com/g/snebes/range-differencer)
 
 Provides support for finding the differences between two or three sequences of comparable entities.
 
-##### Specification
+### Specification
 
 The class RangeDifferencer finds longest sequences of matching and non-matching comparable entities.
 Clients must supply the input to the differencer as an implementation of the RangeComparatorInterface. An RangeComparatorInterface breaks the input data into a sequence of entities and provides a method for comparing one entity with the entity in another RangeComparatorInterface.
