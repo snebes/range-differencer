@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Steve Nebes <snebes@gmail.com>
  *
@@ -10,8 +9,6 @@
 declare(strict_types=1);
 
 namespace SN\RangeDifferencer;
-
-use SN\RangeDifferencer\Core\AbstractLCS;
 
 /**
  * RangeComparator using Longest Common Subsequence.
@@ -224,7 +221,7 @@ class RangeComparatorLCS extends AbstractLCS
              */
             $nextLine = $lcsSide[$i - 1] + 1;
 
-            if ($nextLine !== $lcsSide[$j] && $comparator->rangesEqual($nextLine - 1, $comparator, $lcsSide[$j] -1)) {
+            if ($nextLine !== $lcsSide[$j] && $comparator->rangesEqual($nextLine - 1, $comparator, $lcsSide[$j] - 1)) {
                 $lcsSide[$i] = $nextLine;
             } else {
                 $lcsSide[$i] = $lcsSide[$j];
