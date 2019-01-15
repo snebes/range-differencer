@@ -1,6 +1,4 @@
-<p align="center">
-    <h2>Range Differencer</h2>
-</p>
+<h2 align="center">Range Differencer</h2>
 
 <p align="center">
     <img src="https://img.shields.io/travis/php-v/snebes/range-differencer.svg"/>
