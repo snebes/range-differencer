@@ -1,7 +1,8 @@
 <h2 align="center">Range Differencer</h2>
 
 <p align="center">
-    <img src="https://img.shields.io/travis/php-v/snebes/range-differencer.svg"/>
+    <img src="https://img.shields.io/packagist/php-v/snebes/range-differencer.svg"/>
+    <img src="https://img.shields.io/packagist/v/snebes/range-differencer.svg"/>
     <img src="https://img.shields.io/scrutinizer/build/g/snebes/range-differencer.svg"/>
     <img src="https://img.shields.io/scrutinizer/g/snebes/range-differencer.svg"/>
     <img src="https://img.shields.io/scrutinizer/coverage/g/snebes/range-differencer.svg"/>
