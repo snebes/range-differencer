@@ -245,7 +245,7 @@ class RangeComparatorLCS extends AbstractLCS
         }
 
         // Zero all slots after the length.
-        for ($i = $length; $i < \count($lcsSide); $i++) {
+        for ($i = $length, $iMax = \count($lcsSide); $i < $iMax; $i++) {
             $lcsSide[$i] = 0;
         }
     }

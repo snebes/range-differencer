@@ -163,7 +163,7 @@ final class RangeDifferencer
         $mStart = 0;
         $yStart = 0;
 
-        for ($i = 0; $i < count($in); $i++) {
+        for ($i = 0, $iMax = \count($in); $i < $iMax; $i++) {
             $es = $in[$i];
             $rd = new RangeDifference(
                 RangeDifference::NOCHANGE,

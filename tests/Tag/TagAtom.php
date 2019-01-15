@@ -39,7 +39,7 @@ class TagAtom implements AtomInterface
 
         if (false !== $pos = \mb_strpos($str, ' ')) {
             $this->identifier = \mb_substr($str, 0, $pos);
-            $this->internalIdentifiers = mb_substr($str, $pos + 1);
+            $this->internalIdentifiers = \mb_substr($str, $pos + 1);
         } else {
             $this->identifier = $str;
         }
