@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Steve Nebes <snebes@gmail.com>
  *
@@ -9,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace SN\RangeDifferencer\Core;
+namespace SN\RangeDifferencer;
 
 use PHPUnit\Framework\TestCase;
 
