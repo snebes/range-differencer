@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace SN\RangeDifferencer\Core;
+namespace SN\RangeDifferencer;
 
 class TextLine
 {
