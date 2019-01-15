@@ -22,4 +22,3 @@ tools:
         config: { level: psr2 }
     php_hhvm: true
     php_mess_detector: true
-    sensiolabs_security_checker: true
