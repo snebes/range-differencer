@@ -92,7 +92,7 @@ class RangeComparatorLCS extends AbstractLCS
     protected function setLcs(int $sl1, int $sl2): void
     {
         $this->lcs[0][$sl1] = $sl1 + 1;
-        $this->lcs[0][$sl1] = $sl2 + 1;
+        $this->lcs[1][$sl1] = $sl2 + 1;
     }
 
     /**
@@ -183,6 +183,20 @@ class RangeComparatorLCS extends AbstractLCS
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function longestCommonSubsequence(): void
+    {
+        parent::longestCommonSubsequence();
+
+        // The LCS can be null if one of the sides is empty.
+        if (null !== $this->lcs) {
+            $this->compactAndShiftLCS($this->lcs[0], $this->getLength(), $this->comparator1);
+            $this->compactAndShiftLCS($this->lcs[1], $this->getLength(), $this->comparator2);
+        }
+    }
+
+    /**
      * This method takes an LCS result interspersed with zeros (i.e. empty slots  from the LCS algorithm), compacts it
      * and shifts the LCS chunks as far towards the front as possible. This tends to produce good results most of the
      * time.
@@ -233,20 +247,6 @@ class RangeComparatorLCS extends AbstractLCS
         // Zero all slots after the length.
         for ($i = $length; $i < \count($lcsSide); $i++) {
             $lcsSide[$i] = 0;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function longestCommonSubsequence(): void
-    {
-        parent::longestCommonSubsequence();
-
-        // The LCS can be null if one of the sides is empty.
-        if (null !== $this->lcs) {
-            $this->compactAndShiftLCS($this->lcs[0], $this->getLength(), $this->comparator1);
-            $this->compactAndShiftLCS($this->lcs[1], $this->getLength(), $this->comparator2);
         }
     }
 }

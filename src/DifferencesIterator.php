@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Steve Nebes <snebes@gmail.com>
  *

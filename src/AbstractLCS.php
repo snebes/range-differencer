@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace SN\RangeDifferencer;
 
+/**
+ * Myers' algorithm for longest common subsequence.
+ */
 abstract class AbstractLCS
 {
     /** @const float 10^8, the value of N*M when to start bindnig the run time. */

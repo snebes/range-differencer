@@ -61,10 +61,6 @@ final class RangeDifferencer
         RangeComparatorInterface $left,
         RangeComparatorInterface $right
     ): array {
-        if (null === $ancestor) {
-            return static::findDifferences($left, $right);
-        }
-
         $leftAncestorScript = [];
         $rightAncestorScript = static::findDifferences($ancestor, $right);
 
@@ -76,51 +72,50 @@ final class RangeDifferencer
             return [];
         }
 
-        $myIterator = new DifferencesIterator($rightAncestorScript);
-        $yourIterator = new DifferencesIterator($leftAncestorScript);
-        $diff3 = [];
+        $myIter = new DifferencesIterator($rightAncestorScript);
+        $yourIter = new DifferencesIterator($leftAncestorScript);
 
         // Add a sentinel.
+        $diff3 = [];
         $diff3[] = new RangeDifference(RangeDifference::ERROR);
 
         // Combine the two two-way edit scripts into one.
-        while (null !== $myIterator->getDifference() || null !== $yourIterator->getDifference()) {
-            $myIterator->removeAll();
-            $yourIterator->removeAll();
+        while (null !== $myIter->getDifference() || null !== $yourIter->getDifference()) {
+            $myIter->removeAll();
+            $yourIter->removeAll();
 
-            if (null === $myIterator->getDifference()) {
-                $startThread = $yourIterator;
-            } elseif (null === $yourIterator->getDifference()) {
-                $startThread = $myIterator;
+            if (null === $myIter->getDifference()) {
+                $startThread = $yourIter;
+            } elseif (null === $yourIter->getDifference()) {
+                $startThread = $myIter;
             } else {
                 // Not at end of both scripts take the lowest range.
-                if ($myIterator->getDifference()->getLeftStart() < $yourIterator->getDifference()->getLeftStart()) {
+                if ($myIter->getDifference()->getLeftStart() < $yourIter->getDifference()->getLeftStart()) {
                     // 2 -> common (Ancestor)
-                    $startThread = $myIterator;
-                } elseif ($myIterator->getDifference()->getLeftStart() >
-                    $yourIterator->getDifference()->getLeftStart()) {
-                    $startThread = $yourIterator;
+                    $startThread = $myIter;
+                } elseif ($myIter->getDifference()->getLeftStart() > $yourIter->getDifference()->getLeftStart()) {
+                    $startThread = $yourIter;
                 } else {
-                    if ($myIterator->getDifference()->getLeftLength() === 0 &&
-                        $yourIterator->getDifference()->getLeftLength() === 0) {
+                    if ($myIter->getDifference()->getLeftLength() === 0 &&
+                        $yourIter->getDifference()->getLeftLength() === 0) {
                         // Insertion into the same position is conflict.
-                        $changeRangeStart = $myIterator->getDifference()->getLeftStart();
-                        $changeRangeEnd = $myIterator->getDifference()->getLeftEnd();
+                        $changeRangeStart = $myIter->getDifference()->getLeftStart();
+                        $changeRangeEnd = $myIter->getDifference()->getLeftEnd();
 
-                        $myIterator->next();
-                        $yourIterator->next();
+                        $myIter->next();
+                        $yourIter->next();
 
                         $diff3[] = static::createRangeDifference3(
-                            $myIterator, $yourIterator, $diff3, $right, $left, $changeRangeStart, $changeRangeEnd);
+                            $myIter, $yourIter, $diff3, $right, $left, $changeRangeStart, $changeRangeEnd);
                         continue;
-                    } elseif (0 === $myIterator->getDifference()->getLeftLength()) {
+                    } elseif (0 === $myIter->getDifference()->getLeftLength()) {
                         // Insertion into a position, and modification to the next line, is not conflict.
-                        $startThread = $myIterator;
-                    } elseif (0 === $yourIterator->getDifference()->getLeftLength()) {
-                        $startThread = $yourIterator;
+                        $startThread = $myIter;
+                    } elseif (0 === $yourIter->getDifference()->getLeftLength()) {
+                        $startThread = $yourIter;
                     } else {
                         // Modifications to overlapping lines is conflict.
-                        $startThread = $myIterator;
+                        $startThread = $myIter;
                     }
                 }
             }
@@ -130,7 +125,7 @@ final class RangeDifferencer
             $startThread->next();
 
             // Check for overlapping changes with other thread. Merge overlapping changes with this range.
-            $other = $startThread->other($myIterator, $yourIterator);
+            $other = $startThread->other($myIter, $yourIter);
 
             while (null !== $other->getDifference() && $other->getDifference()->getLeftStart() < $changeRangeEnd) {
                 $newMax = $other->getDifference()->getLeftEnd();
@@ -138,12 +133,12 @@ final class RangeDifferencer
 
                 if ($newMax > $changeRangeEnd) {
                     $changeRangeEnd = $newMax;
-                    $other = $other->other($myIterator, $yourIterator);
+                    $other = $other->other($myIter, $yourIter);
                 }
             }
 
             $diff3[] = static::createRangeDifference3(
-                $myIterator, $yourIterator, $diff3, $right, $left, $changeRangeStart, $changeRangeEnd);
+                $myIter, $yourIter, $diff3, $right, $left, $changeRangeStart, $changeRangeEnd);
         }
 
         // Remove sentinel.
@@ -211,10 +206,6 @@ final class RangeDifferencer
         RangeComparatorInterface $left,
         RangeComparatorInterface $right): array
     {
-        if (null === $ancestor) {
-            return static::findRanges($left, $right);
-        }
-
         $in = static::findDifferences3($ancestor, $left, $right);
         $out = [];
 
@@ -222,7 +213,7 @@ final class RangeDifferencer
         $yStart = 0;
         $aStart = 0;
 
-        for ($i = 0; $i < \count($in); $i++) {
+        for ($i = 0, $iMax = \count($in); $i < $iMax; $i++) {
             $es = $in[$i];
             $rd = new RangeDifference(RangeDifference::NOCHANGE,
                 $mStart, $es->getRightStart() - $mStart,
@@ -253,56 +244,56 @@ final class RangeDifferencer
     }
 
     /**
-     * @param DifferencesIterator      $myIterator
-     * @param DifferencesIterator      $yourIterator
+     * @param DifferencesIterator      $myIter
+     * @param DifferencesIterator      $yourIter
      * @param array                    $diff3
      * @param RangeComparatorInterface $right
      * @param RangeComparatorInterface $left
-     * @param int                      $changeRightStart
-     * @param int                      $changeRightEnd
+     * @param int                      $changeRangeStart
+     * @param int                      $changeRangeEnd
      * @return RangeDifference
      */
     private static function createRangeDifference3(
-        DifferencesIterator $myIterator,
-        DifferencesIterator $yourIterator,
+        DifferencesIterator $myIter,
+        DifferencesIterator $yourIter,
         array &$diff3,
         RangeComparatorInterface $right,
         RangeComparatorInterface $left,
-        int $changeRightStart,
-        int $changeRightEnd
+        int $changeRangeStart,
+        int $changeRangeEnd
     ): RangeDifference {
         $kind = RangeDifference::ERROR;
         /** @var RangeDifference $last */
         $last = $diff3[\count($diff3) - 1];
 
         // At least one range array must be non-empty.
-        assert(true === ($myIterator->getCount() !== 0 || $yourIterator->getCount() !== 0));
+        assert(true === ($myIter->getCount() !== 0 || $yourIter->getCount() !== 0));
 
         // Find corresponding lines to changeRangeStart/End in right and left.
-        if ($myIterator->getCount() === 0) {
+        if ($myIter->getCount() === 0) {
             // Only left changed.
-            $rightStart = $changeRightStart - $last->getAncestorEnd() + $last->getRightEnd();
-            $rightEnd = $changeRightEnd - $last->getAncestorEnd() + $last->getRightEnd();
+            $rightStart = $changeRangeStart - $last->getAncestorEnd() + $last->getRightEnd();
+            $rightEnd = $changeRangeEnd - $last->getAncestorEnd() + $last->getRightEnd();
             $kind = RangeDifference::LEFT;
         } else {
-            $myRange = $myIterator->getRange();
+            $myRange = $myIter->getRange();
             $f = $myRange[0];
             $l = $myRange[\count($myRange) - 1];
-            $rightStart = $changeRightStart - $f->getLeftStart() + $f->getRightStart();
-            $rightEnd = $changeRightEnd - $l->getLeftEnd() + $l->getRightEnd();
+            $rightStart = $changeRangeStart - $f->getLeftStart() + $f->getRightStart();
+            $rightEnd = $changeRangeEnd - $l->getLeftEnd() + $l->getRightEnd();
         }
 
-        if ($yourIterator->getCount() === 0) {
+        if ($yourIter->getCount() === 0) {
             // Only right changed.
-            $leftStart = $changeRightStart - $last->getAncestorEnd() + $last->getLeftEnd();
-            $leftEnd = $changeRightEnd - $last->getAncestorEnd() + $last->getLeftEnd();
+            $leftStart = $changeRangeStart - $last->getAncestorEnd() + $last->getLeftEnd();
+            $leftEnd = $changeRangeEnd - $last->getAncestorEnd() + $last->getLeftEnd();
             $kind = RangeDifference::RIGHT;
         } else {
-            $yourRange = $yourIterator->getRange();
+            $yourRange = $yourIter->getRange();
             $f = $yourRange[0];
             $l = $yourRange[\count($yourRange) - 1];
-            $leftStart = $changeRightStart - $f->getLeftStart() + $f->getRightStart();
-            $leftEnd = $changeRightEnd - $l->getLeftEnd() + $l->getRightEnd();
+            $leftStart = $changeRangeStart - $f->getLeftStart() + $f->getRightStart();
+            $leftEnd = $changeRangeEnd - $l->getLeftEnd() + $l->getRightEnd();
         }
 
         if ($kind === RangeDifference::ERROR) {
@@ -320,7 +311,7 @@ final class RangeDifferencer
             $kind,
             $rightStart, $rightEnd - $rightStart,
             $leftStart, $leftEnd - $leftStart,
-            $changeRightStart, $changeRightEnd - $changeRightStart);
+            $changeRangeStart, $changeRangeEnd - $changeRangeStart);
     }
 
     /**
@@ -344,9 +335,7 @@ final class RangeDifferencer
     ): bool {
         if ($rightLength === $leftLength) {
             for ($i = 0; $i < $rightLength; $i++) {
-                if (!static::rangesEqual(
-                    $right, $rightStart + $i,
-                    $left, $leftStart + $i)) {
+                if (!static::rangesEqual($right, $rightStart + $i, $left, $leftStart + $i)) {
                     break;
                 }
             }

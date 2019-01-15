@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace SN\RangeDifferencer;
 
+/**
+ * TextLineLCS
+ */
 class TextLineLCS extends AbstractLCS
 {
     /** @var TextLine[] */
