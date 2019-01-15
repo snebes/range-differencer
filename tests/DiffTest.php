@@ -11,7 +11,11 @@ declare(strict_types=1);
 namespace SN\RangeDifferencer;
 
 use PHPUnit\Framework\TestCase;
+use SN\RangeDifferencer\Tag\TextAtom;
 
+/**
+ * TextLineLCS Tests
+ */
 class DiffTest extends TestCase
 {
     public function testLineAdditions(): void
@@ -164,5 +168,37 @@ class DiffTest extends TestCase
         $this->assertSame(0, $result[1][0]->getLineNumber());
         $this->assertSame(2, $result[0][1]->getLineNumber());
         $this->assertSame(1, $result[1][1]->getLineNumber());
+    }
+
+    public function testEmtpy(): void
+    {
+        $l1 = TextLineLCS::getTextLines('abc');
+        $lcs = new TextLineLCS($l1, []);
+        $lcs->longestCommonSubsequence();
+
+        $this->assertTrue(true);
+    }
+
+    public function testLong(): void
+    {
+        $s1 = str_repeat('a' . PHP_EOL, 100);
+        $l1 = TextLineLCS::getTextLines($s1);
+        $l2 = TextLineLCS::getTextLines($s1 . 'test');
+        $lcs = new TextLineLCS($l1, $l2);
+        $lcs->longestCommonSubsequence();
+
+        $this->assertTrue(true);
+    }
+
+    public function testOneDiff(): void
+    {
+        $s1 = str_repeat('a' . PHP_EOL, 100);
+        $l1 = TextLineLCS::getTextLines($s1);
+        $l2 = TextLineLCS::getTextLines($s1);
+        $l2[50] = new TextLine(50, 'diff');
+        $lcs = new TextLineLCS($l1, $l2);
+        $lcs->longestCommonSubsequence();
+
+        $this->assertTrue(true);
     }
 }

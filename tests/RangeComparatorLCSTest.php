@@ -236,4 +236,26 @@ class RangeComparatorLCSTest extends TestCase
         $this->assertSame(1, \count($diffs));
         $this->assertSame('RangeDifference {CHANGE/RIGHT, Left: (0, 0) Right: (0, 11)}', $diffs[0]->__toString());
     }
+
+    public function testFindMostProgress(): void
+    {
+        $lcs = $this->createMock(AbstractLCS::class);
+
+        $M = 7;
+        $N = 2;
+        $limit = 3;
+        $V = [
+            [0,0,1,1,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        ];
+
+        $refMethod = new \ReflectionMethod($lcs, 'findMostProgress');
+        $refMethod->setAccessible(true);
+
+        $actual = $refMethod->invokeArgs($lcs, [$M, $N, $limit, $V]);
+        $this->assertSame([0, 4, 5], $actual);
+
+        $actual = $refMethod->invokeArgs($lcs, [$M, $N, 4, $V]);
+        $this->assertSame([0, 1, 8], $actual);
+    }
 }

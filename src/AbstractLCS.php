@@ -15,7 +15,7 @@ namespace SN\RangeDifferencer;
  */
 abstract class AbstractLCS
 {
-    /** @const float 10^8, the value of N*M when to start bindnig the run time. */
+    /** @const float 10^8, the value of N*M when to start binding the run time. */
     private const TOO_LONG = 100000000.0;
 
     /** @const float Limit the time to D^POW_LIMIT */
@@ -69,11 +69,8 @@ abstract class AbstractLCS
         // The common prefixes and suffixes are always part of some LCS, include them now to reduce our search space.
         $max = \min($length1, $length2);
 
-        for (
-            $forwardBound = 0;
-            $forwardBound < $max && $this->isRangeEqual($forwardBound, $forwardBound);
-            $forwardBound++
-        ) {
+        for ($forwardBound = 0;
+            $forwardBound < $max && $this->isRangeEqual($forwardBound, $forwardBound); $forwardBound++) {
             $this->setLcs($forwardBound, $forwardBound);
         }
 
@@ -277,7 +274,7 @@ abstract class AbstractLCS
         /*
          * HACK: Since we didn't really finish the LCS computation we don't really know the length of the SES. We don't
          * do anything with the result anyway, unless it's <=1. We know for a fact SES > 1 so 5 is as good a number as
-         *  any to return here.
+         * any to return here.
          */
 
         return 5;
@@ -296,7 +293,7 @@ abstract class AbstractLCS
      *               with the most progress, $result[1] is the y coordinate of the current location in the diagonal with
      *               the most progress and $result[2] is the amount of progress made in that diagonal.
      */
-    private function findMostProgress(int $M, int $N, int $limit, array &$V): array
+    private function findMostProgress(int $M, int $N, int $limit, array $V): array
     {
         $delta = $N - $M;
 
