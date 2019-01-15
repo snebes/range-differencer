@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace SN\RangeDifferencer;
 
-use SN\RangeDifferencer\Core\AbstractLCS;
-
 /**
  * RangeComparator using Longest Common Subsequence.
  *
