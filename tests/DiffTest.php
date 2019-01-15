@@ -54,7 +54,7 @@ class DiffTest extends TestCase
 
         $this->assertTrue(\count($result[0]) === \count($result[1]));
 
-        for ($i = 0; $i < \count($result[0]); $i++) {
+        for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
             $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
         }
 
@@ -82,7 +82,7 @@ class DiffTest extends TestCase
         $this->assertSame(2, \count($result[0]));
         $this->assertSame(2, \count($result[1]));
 
-        for ($i = 0; $i < \count($result[0]); $i++) {
+        for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
             $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
         }
 
@@ -108,7 +108,7 @@ class DiffTest extends TestCase
         $this->assertSame(2, \count($result[0]));
         $this->assertSame(2, \count($result[1]));
 
-        for ($i = 0; $i < \count($result[0]); $i++) {
+        for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
             $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
         }
 
@@ -134,7 +134,7 @@ class DiffTest extends TestCase
         $this->assertSame(2, \count($result[0]));
         $this->assertSame(2, \count($result[1]));
 
-        for ($i = 0; $i < \count($result[0]); $i++) {
+        for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
             $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
         }
 
@@ -160,7 +160,7 @@ class DiffTest extends TestCase
         $this->assertSame(2, \count($result[0]));
         $this->assertSame(2, \count($result[1]));
 
-        for ($i = 0; $i < \count($result[0]); $i++) {
+        for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
             $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
         }
 
