@@ -24,7 +24,6 @@ class TextAtom implements AtomInterface
     public function __construct(string $str)
     {
         if (!$this->isValidAtom($str)) {
-            var_dump($str);
             throw new \InvalidArgumentException('The given String is not a valid Text Atom.');
         }
 

@@ -1,0 +1,21 @@
+<h2 align="center">Range Differencer</h2>
+
+<p align="center">
+    <img src="https://img.shields.io/packagist/php-v/snebes/range-differencer.svg"/>
+    <img src="https://img.shields.io/packagist/v/snebes/range-differencer.svg"/>
+    <img src="https://img.shields.io/scrutinizer/build/g/snebes/range-differencer.svg"/>
+    <img src="https://img.shields.io/scrutinizer/g/snebes/range-differencer.svg"/>
+    <img src="https://img.shields.io/scrutinizer/coverage/g/snebes/range-differencer.svg"/>
+</p>
+
+
+Provides support for finding the differences between two or three sequences of comparable entities.
+
+##### Specification
+
+The class RangeDifferencer finds longest sequences of matching and non-matching comparable entities.
+Clients must supply the input to the differencer as an implementation of the RangeComparatorInterface. An RangeComparatorInterface breaks the input data into a sequence of entities and provides a method for comparing one entity with the entity in another RangeComparatorInterface.
+
+For example, to compare two text documents and find longest common sequences of matching and non-matching lines, the implementation of RangeComparatorInterface must break the document into lines and provide a method for testing whether two lines are considered equal. See TagComparator for how this can be done.
+
+The differencer returns the differences among these sequences as an array of RangeDifference objects. Every single RangeDifference describes the kind of difference (no change, change, addition, deletion) and the corresponding ranges of the underlying comparable entities in the two or three inputs.
