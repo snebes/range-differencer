@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace SN\RangeDifferencer;
 
 use PHPUnit\Framework\TestCase;
+use SN\RangeDifferencer\Core\LCS;
 use SN\RangeDifferencer\Tag\TagComparator;
 
 /**
@@ -239,7 +240,7 @@ class RangeComparatorLCSTest extends TestCase
 
     public function testFindMostProgress(): void
     {
-        $lcs = $this->createMock(AbstractLCS::class);
+        $lcs = $this->createMock(LCS::class);
 
         $M = 7;
         $N = 2;

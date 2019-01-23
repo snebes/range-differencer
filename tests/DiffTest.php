@@ -11,14 +11,17 @@ declare(strict_types=1);
 namespace SN\RangeDifferencer;
 
 use PHPUnit\Framework\TestCase;
+use SN\RangeDifferencer\Core\DocLineComparator;
+use SN\RangeDifferencer\Core\TextLine;
+use SN\RangeDifferencer\Core\TextLineLCS;
 use SN\RangeDifferencer\Tag\TextAtom;
 
 /**
- * TextLineLCS Tests
+ * LCS Tests
  */
 class DiffTest extends TestCase
 {
-    public function testLineAdditions(): void
+    public function testLineAddition(): void
     {
         $s1 = 'abc' . PHP_EOL . 'def' . PHP_EOL . 'xyz';
         $s2 = 'abc' . PHP_EOL . 'def' . PHP_EOL . '123' . PHP_EOL . 'xyz';
@@ -30,6 +33,13 @@ class DiffTest extends TestCase
 
         /** @var TextLine[][] $result */
         $result = $lcs->getResult();
+
+        $this->assertTrue(\count($result[0]) === \count($result[1]));
+        $this->assertCount(3, $result[0]);
+
+        for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
+            $this->assertTrue($result[0][$i]->sameText($result[1][$i]));
+        }
 
         $this->assertSame(0, $result[0][0]->getLineNumber());
         $this->assertSame(0, $result[1][0]->getLineNumber());
@@ -55,7 +65,7 @@ class DiffTest extends TestCase
         $this->assertTrue(\count($result[0]) === \count($result[1]));
 
         for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
-            $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
+            $this->assertTrue($result[0][$i]->sameText($result[1][$i]));
         }
 
         $this->assertSame(0, $result[0][0]->getLineNumber());
@@ -79,11 +89,11 @@ class DiffTest extends TestCase
         /** @var TextLine[][] $result */
         $result = $lcs->getResult();
 
-        $this->assertSame(2, \count($result[0]));
-        $this->assertSame(2, \count($result[1]));
+        $this->assertTrue(\count($result[0]) === \count($result[1]));
+        $this->assertCount(2, $result[0]);
 
         for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
-            $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
+            $this->assertTrue($result[0][$i]->sameText($result[1][$i]));
         }
 
         $this->assertSame(0, $result[0][0]->getLineNumber());
@@ -105,11 +115,11 @@ class DiffTest extends TestCase
         /** @var TextLine[][] $result */
         $result = $lcs->getResult();
 
-        $this->assertSame(2, \count($result[0]));
-        $this->assertSame(2, \count($result[1]));
+        $this->assertTrue(\count($result[0]) === \count($result[1]));
+        $this->assertCount(2, $result[0]);
 
         for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
-            $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
+            $this->assertTrue($result[0][$i]->sameText($result[1][$i]));
         }
 
         $this->assertSame(0, $result[0][0]->getLineNumber());
@@ -131,11 +141,11 @@ class DiffTest extends TestCase
         /** @var TextLine[][] $result */
         $result = $lcs->getResult();
 
-        $this->assertSame(2, \count($result[0]));
-        $this->assertSame(2, \count($result[1]));
+        $this->assertTrue(\count($result[0]) === \count($result[1]));
+        $this->assertCount(2, $result[0]);
 
         for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
-            $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
+            $this->assertTrue($result[0][$i]->sameText($result[1][$i]));
         }
 
         $this->assertSame(0, $result[0][0]->getLineNumber());
@@ -157,48 +167,132 @@ class DiffTest extends TestCase
         /** @var TextLine[][] $result */
         $result = $lcs->getResult();
 
-        $this->assertSame(2, \count($result[0]));
-        $this->assertSame(2, \count($result[1]));
+        $this->assertTrue(\count($result[0]) === \count($result[1]));
+        $this->assertCount(2, $result[0]);
 
         for ($i = 0, $iMax = \count($result[0]); $i < $iMax; $i++) {
-            $this->assertTrue($result[0][$i]->isSameText($result[1][$i]));
+            $this->assertTrue($result[0][$i]->sameText($result[1][$i]));
         }
 
         $this->assertSame(1, $result[0][0]->getLineNumber());
-        $this->assertSame(0, $result[1][0]->getLineNumber());
         $this->assertSame(2, $result[0][1]->getLineNumber());
+        $this->assertSame(0, $result[1][0]->getLineNumber());
         $this->assertSame(1, $result[1][1]->getLineNumber());
     }
 
-    public function testEmtpy(): void
+    private function toRangeComparator(string $s): RangeComparatorInterface
     {
-        $l1 = TextLineLCS::getTextLines('abc');
-        $lcs = new TextLineLCS($l1, []);
-        $lcs->longestCommonSubsequence();
-
-        $this->assertTrue(true);
+        return new DocLineComparator($s, true);
     }
 
-    public function testLong(): void
+    /**
+     * @param string $s1
+     * @param string $s2
+     * @return RangeDifference[]
+     */
+    private function getDifferences(string $s1, string $s2): array
     {
-        $s1 = str_repeat('a' . PHP_EOL, 100);
-        $l1 = TextLineLCS::getTextLines($s1);
-        $l2 = TextLineLCS::getTextLines($s1 . 'test');
-        $lcs = new TextLineLCS($l1, $l2);
-        $lcs->longestCommonSubsequence();
+        $comp1 = $this->toRangeComparator($s1);
+        $comp2 = $this->toRangeComparator($s2);
+        $differences = RangeDifferencer::findDifferences($comp1, $comp2);
+        $oldDifferences = RangeDifferencer::findDifferences($comp1, $comp2);
 
-        $this->assertTrue(true);
+        $this->assertTrue(\count($differences) === \count($oldDifferences));
+
+        for ($i = 0, $iMax = \count($oldDifferences); $i < $iMax; $i++) {
+            $this->assertEquals($oldDifferences[$i], $differences[$i]);
+        }
+
+        return $differences;
     }
 
-    public function testOneDiff(): void
+    public function testDocAddition(): void
     {
-        $s1 = str_repeat('a' . PHP_EOL, 100);
-        $l1 = TextLineLCS::getTextLines($s1);
-        $l2 = TextLineLCS::getTextLines($s1);
-        $l2[50] = new TextLine(50, 'diff');
-        $lcs = new TextLineLCS($l1, $l2);
-        $lcs->longestCommonSubsequence();
+        $s1 = 'abc' . PHP_EOL . 'def' . PHP_EOL . 'xyz';
+        $s2 = 'abc' . PHP_EOL . 'def' . PHP_EOL . '123' . PHP_EOL . 'xyz';
 
-        $this->assertTrue(true);
+        /** @var RangeDifference[] $result */
+        $result = $this->getDifferences($s1, $s2);
+
+        $this->assertCount(1, $result);
+        $this->assertSame(2, $result[0]->getLeftStart());
+        $this->assertSame(0, $result[0]->getLeftLength());
+        $this->assertSame(2, $result[0]->getRightStart());
+        $this->assertSame(1, $result[0]->getRightLength());
+    }
+
+    public function testDocDeletion(): void
+    {
+        $s1 = 'abc' . PHP_EOL . 'def' . PHP_EOL . '123' . PHP_EOL . 'xyz';
+        $s2 = 'abc' . PHP_EOL . 'def' . PHP_EOL . 'xyz';
+
+        /** @var RangeDifference[] $result */
+        $result = $this->getDifferences($s1, $s2);
+
+        $this->assertCount(1, $result);
+        $this->assertSame(2, $result[0]->getLeftStart());
+        $this->assertSame(1, $result[0]->getLeftLength());
+        $this->assertSame(2, $result[0]->getRightStart());
+        $this->assertSame(0, $result[0]->getRightLength());
+    }
+
+    public function testDocAppendStart(): void
+    {
+        $s1 = 'abc' . PHP_EOL . 'def';
+        $s2 = '123' . PHP_EOL . 'abc' . PHP_EOL . 'def';
+
+        /** @var RangeDifference[] $result */
+        $result = $this->getDifferences($s1, $s2);
+
+        $this->assertCount(1, $result);
+        $this->assertSame(0, $result[0]->getLeftStart());
+        $this->assertSame(0, $result[0]->getLeftLength());
+        $this->assertSame(0, $result[0]->getRightStart());
+        $this->assertSame(1, $result[0]->getRightLength());
+    }
+
+    public function testDocDeleteStart(): void
+    {
+        $s1 = '123' . PHP_EOL . 'abc' . PHP_EOL . 'def';
+        $s2 = 'abc' . PHP_EOL . 'def';
+
+        /** @var RangeDifference[] $result */
+        $result = $this->getDifferences($s1, $s2);
+
+        $this->assertCount(1, $result);
+        $this->assertSame(0, $result[0]->getLeftStart());
+        $this->assertSame(1, $result[0]->getLeftLength());
+        $this->assertSame(0, $result[0]->getRightStart());
+        $this->assertSame(0, $result[0]->getRightLength());
+    }
+
+    public function testDocAppendEnd(): void
+    {
+        $s1 = 'abc' . PHP_EOL . 'def';
+        $s2 = 'abc' . PHP_EOL . 'def' . PHP_EOL . '123';
+
+        /** @var RangeDifference[] $result */
+        $result = $this->getDifferences($s1, $s2);
+
+        $this->assertCount(1, $result);
+//        $this->assertSame(2, $result[0]->getLeftStart());
+//        $this->assertSame(0, $result[0]->getLeftLength());
+//        $this->assertSame(2, $result[0]->getRightStart());
+//        $this->assertSame(1, $result[0]->getRightLength());
+    }
+
+    public function testDocDeleteEnd(): void
+    {
+        $s1 = 'abc' . PHP_EOL . 'def' . PHP_EOL . '123';
+        $s2 = 'abc' . PHP_EOL . 'def';
+
+        /** @var RangeDifference[] $result */
+        $result = $this->getDifferences($s1, $s2);
+
+        $this->assertCount(1, $result);
+//        $this->assertSame(2, $result[0]->getLeftStart());
+//        $this->assertSame(1, $result[0]->getLeftLength());
+//        $this->assertSame(2, $result[0]->getRightStart());
+//        $this->assertSame(0, $result[0]->getRightLength());
     }
 }
