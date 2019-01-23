@@ -8,12 +8,9 @@
 
 declare(strict_types=1);
 
-namespace SN\RangeDifferencer;
+namespace SN\RangeDifferencer\Core;
 
-/**
- * TextLineLCS
- */
-class TextLineLCS extends AbstractLCS
+class TextLineLCS extends LCS
 {
     /** @var TextLine[] */
     private $lines1 = [];
@@ -22,7 +19,7 @@ class TextLineLCS extends AbstractLCS
     private $lines2 = [];
 
     /** @var TextLine[][] */
-    private $lcs = [];
+    private $lcs;
 
     /**
      * Default values.
@@ -42,7 +39,7 @@ class TextLineLCS extends AbstractLCS
     public function getResult(): array
     {
         $length = $this->getLength();
-        $result = array_fill(0, 2, null);
+        $result = \array_fill(0, 2, null);
 
         if (0 === $length) {
             return $result;
@@ -77,7 +74,7 @@ class TextLineLCS extends AbstractLCS
      */
     protected function isRangeEqual(int $i1, int $i2): bool
     {
-        return $this->lines1[$i1]->isSameText($this->lines2[$i2]);
+        return $this->lines1[$i1]->sameText($this->lines2[$i2]);
     }
 
     /**
@@ -95,19 +92,19 @@ class TextLineLCS extends AbstractLCS
      */
     protected function initializeLcs(int $lcsLength): void
     {
-        $this->lcs = array_fill(0, 2, array_fill(0, $lcsLength, null));
+        $this->lcs = \array_fill(0, 2, \array_fill(0, $lcsLength, null));
     }
 
     /**
      * @param TextLine[] $lcsSide
      * @param int        $len
      * @param TextLine[] $original
-     * @return array
+     * @return TextLine[]
      */
     private function compactAndShiftLCS(array &$lcsSide, int $len, array &$original): array
     {
         /** @var TextLine[] $result */
-        $result = array_fill(0, $len, null);
+        $result = \array_fill(0, $len, null);
 
         if (0 === $len) {
             return $result;
@@ -127,7 +124,7 @@ class TextLineLCS extends AbstractLCS
                 $j++;
             }
 
-            if ($original[$result[$i - 1]->getLineNumber() + 1]->isSameText($lcsSide[$j])) {
+            if ($original[$result[$i - 1]->getLineNumber() + 1]->sameText($lcsSide[$j])) {
                 $result[$i] = $original[$result[$i - 1]->getLineNumber() + 1];
             } else {
                 $result[$i] = $lcsSide[$j];
@@ -150,13 +147,12 @@ class TextLineLCS extends AbstractLCS
         $end = static::getEOL($text, 0);
         $lineNum = 0;
 
-        while (-1 !== $end) {
+        while ($end !== -1) {
             $lines[] = new TextLine($lineNum++, \mb_substr($text, $begin, $end - $begin));
             $begin = $end + 1;
             $end = static::getEOL($text, $begin);
 
-            if ($end === $begin && "\r" === \mb_substr($text, $begin - 1, 1)  && "\n" === \mb_substr($text, $begin, 1)) {
-                // We have \r followed by \n, skip it.
+            if ($end === $begin && \mb_substr($text, $begin - 1, 1) === "\r" && \mb_substr($text, $begin, 1) === "\n") {
                 $begin = $end + 1;
                 $end = static::getEOL($text, $begin);
             }
@@ -172,7 +168,7 @@ class TextLineLCS extends AbstractLCS
      * @param int    $start
      * @return int
      */
-    private static function getEOL(string $text, int $start): int
+    public static function getEOL(string $text, int $start): int
     {
         $max = \mb_strlen($text);
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Steve Nebes <snebes@gmail.com>
  *
@@ -9,8 +8,11 @@
 
 declare(strict_types=1);
 
-namespace SN\RangeDifferencer;
+namespace SN\RangeDifferencer\Core;
 
+/**
+ * @internal
+ */
 class TextLine
 {
     /** @var int */
@@ -48,14 +50,12 @@ class TextLine
     }
 
     /**
-     * Compares this TextLine to $other and returns true if they have the same text.
-     *
-     * @param TextLine $other
+     * @param TextLine $textLine
      * @return bool
      */
-    public function isSameText(TextLine $other): bool
+    public function sameText(TextLine $textLine): bool
     {
-        return $this->text === $other->getText();
+        return $this->text === $textLine->getText();
     }
 
     /**

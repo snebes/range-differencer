@@ -8,12 +8,12 @@
 
 declare(strict_types=1);
 
-namespace SN\RangeDifferencer;
+namespace SN\RangeDifferencer\Core;
 
 /**
  * Myers' algorithm for longest common subsequence.
  */
-abstract class AbstractLCS
+abstract class LCS
 {
     /** @const float 10^8, the value of N*M when to start binding the run time. */
     private const TOO_LONG = 100000000.0;

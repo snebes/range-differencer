@@ -10,12 +10,14 @@ declare(strict_types=1);
 
 namespace SN\RangeDifferencer;
 
+use SN\RangeDifferencer\Core\LCS;
+
 /**
  * RangeComparator using Longest Common Subsequence.
  *
  * @internal
  */
-class RangeComparatorLCS extends AbstractLCS
+class RangeComparatorLCS extends LCS
 {
     /** @var RangeComparatorInterface */
     private $comparator1;
