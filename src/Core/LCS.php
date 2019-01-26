@@ -57,11 +57,11 @@ abstract class LCS
             return;
         }
 
-        $this->maxDifferences = (int)(($length1 + $length2 + 1) / 2);
+        $this->maxDifferences = (int) (($length1 + $length2 + 1) / 2);
 
         if ($length1 * $length2 > self::TOO_LONG) {
             // Limit complexity to D^POW_LIMIT for long sequences.
-            $this->maxDifferences = (int)\pow($this->maxDifferences, self::POW_LIMIT - 1.0);
+            $this->maxDifferences = (int) \pow($this->maxDifferences, self::POW_LIMIT - 1.0);
         }
 
         $this->initializeLcs($length1);
@@ -70,7 +70,7 @@ abstract class LCS
         $max = \min($length1, $length2);
 
         for ($forwardBound = 0;
-            $forwardBound < $max && $this->isRangeEqual($forwardBound, $forwardBound); $forwardBound++) {
+             $forwardBound < $max && $this->isRangeEqual($forwardBound, $forwardBound); $forwardBound++) {
             $this->setLcs($forwardBound, $forwardBound);
         }
 
@@ -107,7 +107,7 @@ abstract class LCS
     {
         // Check that both sequences are non-empty.
         if ($bottomL1 > $topL1 || $bottomL2 > $topL2) {
-            return 0;
+            return (int) 0;
         }
 
         $d = $this->findMiddleSnake($bottomL1, $topL1, $bottomL2, $topL2, $V, $snake);
@@ -123,9 +123,9 @@ abstract class LCS
         }
 
         if ($d > 1) {
-            return $len +
+            return (int) ($len +
                 $this->lcsRec($bottomL1, $startX - 1, $bottomL2, $startY - 1, $V, $snake) +
-                $this->lcsRec($startX + $len, $topL1, $startY + $len, $topL2, $V, $snake);
+                $this->lcsRec($startX + $len, $topL1, $startY + $len, $topL2, $V, $snake));
         } elseif ($d === 1) {
             // In this case the sequences differ by exactly 1 line. We have already saved all the lines after the
             // difference in the for loop above, now we need to save all the lines before the difference.
@@ -135,10 +135,10 @@ abstract class LCS
                 $this->setLcs($bottomL1 + $i, $bottomL2 + $i);
             }
 
-            return $max + $len;
+            return (int) ($max + $len);
         }
 
-        return $len;
+        return (int) $len;
     }
 
     /**
@@ -168,7 +168,7 @@ abstract class LCS
         $delta = $N - $M;
         $isEven = ($delta & 1) === 1 ? false : true;
 
-        $limit = \min($this->maxDifferences, (int)(($N + $M + 1) / 2));
+        $limit = \min($this->maxDifferences, (int) (($N + $M + 1) / 2));
 
         // Offset to make it odd/even.
         // a 0 or 1 that we add to the start offset to make it odd/even
@@ -211,7 +211,7 @@ abstract class LCS
                 $V[0][$limit + $k] = $x;
 
                 if (!$isEven && $k >= $delta - $d + 1 && $k <= $delta + $d - 1 && $x >= $V[1][$limit + $k - $delta]) {
-                    return 2 * $d - 1;
+                    return (int) (2 * $d - 1);
                 }
 
                 // Check to see if we can cut down the diagonal range.
@@ -250,7 +250,7 @@ abstract class LCS
                     $snake[0] = $bottomL1 + $x;
                     $snake[1] = $bottomL2 + $y;
 
-                    return 2 * $d;
+                    return (int) (2 * $d);
                 }
 
                 // Check to see if we can cut down our diagonal range.
@@ -315,7 +315,7 @@ abstract class LCS
 
         $maxProgress = array_fill(
             0,
-            (int)(\max($forwardEndDiag - $forwardStartDiag, $backwardEndDiag - $backwardStartDiag) / 2 + 1),
+            (int) (\max($forwardEndDiag - $forwardStartDiag, $backwardEndDiag - $backwardStartDiag) / 2 + 1),
             [0, 0, 0]);
         // The first entry is current, it is initialized with 0s.
         $numProgress = 0;
@@ -372,7 +372,7 @@ abstract class LCS
             }
         }
 
-        return $maxProgress[(int)($numProgress / 2)];
+        return $maxProgress[(int) ($numProgress / 2)];
     }
 
     /**
