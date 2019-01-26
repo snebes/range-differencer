@@ -17,7 +17,7 @@ namespace SN\RangeDifferencer;
  */
 class DifferencesIterator
 {
-    /** @var RangeDifference[] */
+    /** @var RangeDifference[]|null[] */
     private $fRange = [];
 
     /** @var int */
@@ -26,7 +26,7 @@ class DifferencesIterator
     /** @var RangeDifference[] */
     private $fArray = [];
 
-    /** @var RangeDifference */
+    /** @var RangeDifference|null */
     private $fDifference;
 
     /**
