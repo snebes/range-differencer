@@ -313,7 +313,7 @@ abstract class LCS
 
         $backwardEndDiag = \min($M, $limit);
 
-        $maxProgress = array_fill(
+        $maxProgress = \array_fill(
             0,
             (int) (\max($forwardEndDiag - $forwardStartDiag, $backwardEndDiag - $backwardStartDiag) / 2 + 1),
             [0, 0, 0]);
